@@ -1,0 +1,106 @@
+<main class="float">
+  <%if(typeof posts !== 'undefined' && posts.length > 0){%>
+  <!-- sidebar -->
+  <div id="sidenav">
+    <aside>
+      <div class="aside_close" id="close">&times;</div>
+
+      <%categories.forEach((category)=>{%>
+      <header><%=category.name%> Tutorial</header>
+      <%})%>
+
+      <ul>
+        <%posts.forEach((post)=>{%>
+        <li>
+          <a href="/post/<%=post._id%>/<%=post.category%>"><%=post.name%></a>
+        </li>
+        <%})%>
+      </ul>
+    </aside>
+  </div>
+
+  <!-- for advert -->
+  <div class="advert">
+    <h1>For advertisement</h1>
+    <img src="images/404.svg" alt="" />
+  </div>
+
+  <!-- page_content -->
+
+  <div class="page_content">
+    <%categories.forEach((category)=>{%>
+      <a href="/editCategory/<%=category._id%>" class="edit"
+      ><i class="fa fa-pencil" aria-hidden="true" style="color: #063146"></i>
+      Edit</a>
+
+    <div class="aside_open" id="open">
+      <div class="bars"></div>
+      <div class="bars"></div>
+      <div class="bars"></div>
+    </div>
+    <header class="course_intro">
+      <h2><%=category.name%></h2>
+
+      <p>Introduction to <%=category.name%></p>
+    </header>
+    <p>
+      <!-- <%=category.body%> -->
+      <%-category.purifiedHtml%>
+    </p>
+  </div>
+  <%})%> 
+  
+  <%}%>
+</main>
+
+<!-- DETAILS PAGE -->
+<main class="float">
+  <%if(typeof postDetails !== 'undefined'){%>
+  <div id="sidenav">
+    <aside>
+      <div class="aside_close" id="close">&times;</div>
+      <header><%=postDetails.category%> Tutorial</header>
+      <ul>
+        <%post_Names.forEach((post_Name)=>{%>
+        <li>
+          <a href="/post/<%=post_Name._id%>/<%=post_Name.category%>"
+            ><%=post_Name.name%></a
+          >
+        </li>
+        <%})%>
+      </ul>
+    </aside>
+  </div>
+  <!-- for advert -->
+  <div class="advert">
+    <h1>For advertisement</h1>
+  </div>
+
+  <div class="page_content">
+    <section class="option_content">
+      <form action="/deletePost/<%=postDetails._id%>?_method=DELETE" method="POST">
+        <i class="fa fa-trash" aria-hidden="true" style="color: #063146"></i>
+        <button type="submit">Delete</button>
+      </form>
+
+      <a href="/editPost/<%=postDetails._id%>" class="edit"
+        ><i class="fa fa-pencil" aria-hidden="true" style="color: #063146"></i>
+        Edit</a
+      >
+    </section>
+    <div class="aside_open" id="open" title="open sidebar">
+      <div class="bars"></div>
+      <div class="bars"></div>
+      <div class="bars"></div>
+    </div>
+    <header class="course_intro">
+      <h2><%=postDetails.category%></h2>
+      <p><%=postDetails.name%></p>
+    </header>
+    <p>
+      <!-- <%=postDetails.body%> -->
+      <%-postDetails.purifiedHtml%>
+    </p>
+  </div>
+  <%}%>
+</main>
