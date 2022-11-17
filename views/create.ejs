@@ -1,6 +1,11 @@
 <h3 class="submit_new">CREATE A POST</h3>
     <div class="form-container">
     <form action="/create"  method="POST">
+      
+         <!-- For csrf -->
+      <!-- name has to be _csrf(this lets the package do the validation for us) -->
+      <input type="hidden" name="_csrf" value="<%=csrfToken%>">
+      <!-- for csrf ends -->
       <!-- Name -->
     <div class="row">
       <div class="col-25">
@@ -34,7 +39,8 @@
                 <option value="HOWTO">HOWTO</option>
                 <option value="BOOTSTRAP">BOOTSTRAP</option>
                 <option value="NODEJS">NODEJS</option>
-
+                <option value="JAVA">JAVA</option>
+                <option value="PYTHON">PYTHON</option>
               </select>
             </div>
           </div>

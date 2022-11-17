@@ -1,11 +1,34 @@
 const Category = require("../model/categories");
 const Post = require("../model/post");
-const { post } = require("../routers/blog-routes");
+const User = require('../model/user');
+const bcryptjs = require('bcryptjs');
+const passport = require('passport');
+//require passport file
+require('./passportlocals')(passport);
+
+// check if authenticated
+const checkAuth = function(req,res,next){
+  if(req.isAuthenticated()){
+      // to prevent caching
+      res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, post-check=0, pre-check=0');
+    next()
+  }else{
+    res.redirect('/login')
+  }
+}
+
+
 
 const homePage = async (req, res) => {
   try {
     const categories = await Category.find();
-    res.render("index", { title: "home-page", categories });
+   if(req.isAuthenticated()){
+    // console.log(req.user)
+    res.render("index", { title: "home-page", categories, username: req.user.username, loggedin: true, csrfToken: req.csrfToken()});
+   }
+   else{
+    res.render("index", { title: "home-page", categories, username: '', loggedin: false, csrfToken: req.csrfToken() });
+   }
   } catch (err) {
     console.log(err);
   }
@@ -18,7 +41,13 @@ const categoriesContent = async(req, res) => {
           const posts = await Post.find({category:category_Name});  
           // FIND CATEGORIES
           const categories = await Category.find({name:category_Name});
-          res.render('categories-content', { title: 'categories-content', posts, categories });
+          if(req.isAuthenticated()){
+            res.render('categories-content', { title: 'categories-content', posts, categories, loggedin: true ,csrfToken: req.csrfToken()});
+           }
+           else{
+            res.render('categories-content', { title: 'categories-content', posts, categories, loggedin: false,csrfToken: req.csrfToken() });
+           }
+          
     }
 
     catch(err){
@@ -34,7 +63,13 @@ const postDetails = async(req,res)=>{
         const postName = req.params.postName;
         const postDetails = await Post.findById(id);
         const post_Names = await Post.find({category: postName}); 
-        res.render('categories-content',{ title: 'Post content', postDetails, post_Names})
+        if(req.isAuthenticated()){
+          res.render('categories-content',{ title: 'Post content', postDetails, post_Names, loggedin: true,csrfToken: req.csrfToken()})
+
+         }
+         else{
+          res.render('categories-content',{ title: 'Post content', postDetails, post_Names, loggedin: false,csrfToken: req.csrfToken()})
+         }
     }
     catch(err){
      console.log(err)
@@ -58,21 +93,14 @@ const postDetails = async(req,res)=>{
   // create post
   const create_get = async (req,res)=>{
 try{
-res.render('create',{title:'create-post'})
+res.render('create',{title:'create-post',csrfToken: req.csrfToken()})
 }
 catch(err){
 console.log(err) 
 }
   }
 
-  const add_category = async (req,res)=>{
-    try{
-    res.render('category-add',{title:'new-category'})
-    }
-    catch(err){
-    console.log(err) 
-    }
-      }
+  
 
   const create_post = async(req, res)=>{
     try{
@@ -96,7 +124,7 @@ console.log(err)
         try{
             const id = req.params.id;
             const editPost = await Post.findById(id);
-            res.render('edit_post', {title: 'edit_post', editPost})
+            res.render('edit_post', {title: 'edit_post', editPost,csrfToken: req.csrfToken()})
         }
         catch(err){
             console.log(err)
@@ -130,6 +158,17 @@ console.log(err)
       console.log(err)
     }
   }
+
+
+  //get add new category page
+  const add_category = async (req,res)=>{
+    try{
+    res.render('category-add',{title:'new-category', csrfToken: req.csrfToken()})
+    }
+    catch(err){
+    console.log(err) 
+    }
+      }
   //new category
   const newCategory = async (req,res)=>{
 
@@ -166,8 +205,8 @@ console.log(err)
     }
   }
 
-const aboutPage = (req, res) => {
-  res.render("about", { title: "About us-page" });
+const privacyPage = (req, res) => {
+  res.render("privacy", { title: "About us-page" });
 };
 
 
@@ -178,7 +217,7 @@ const editCategory_get = async(req,res)=>{
     const id = req.params.id
     const toBeEditedCategory = await Category.findById(id);
     // console.log(id);
-    res.render('editCategory', {title: 'edit_category', toBeEditedCategory});
+    res.render('editCategory', {title: 'edit_category', toBeEditedCategory, csrfToken: req.csrfToken()});
    }
 
    catch(err){
@@ -226,10 +265,105 @@ console.log(err)
 }
 }
 
+const deleteCategory = async (req,res)=>{
+  try{
+      const id = req.params.id;
+    //  res.send(id)
+      const catDelete = await Category.findByIdAndDelete(id)
+      res.redirect('/')
+  }
+  catch(err){
+    console.log(err)
+  }
+}
+
+const getSignup = async (req,res)=>{
+  try{
+    res.render('signup',{title:'signup', csrfToken: req.csrfToken()})
+  }catch(err){
+    console.log(err)
+  }
+}
+
+const postSignup = async(req,res)=>{
+  /// get all form values
+  const {email,uname,psw,psw_repeat} = req.body;
+  // check if fields are empty;
+  if(!email || !uname || !psw || !psw_repeat){
+   res.render('signup',{title:'signup', err:'All fields are required', csrfToken: req.csrfToken()});
+
+  }else if(psw != psw_repeat){
+   res.render('signup',{title:'signup', err:'Password and repeat password does not match', csrfToken: req.csrfToken()});
+
+  } else{
+    // check if user exists
+    User.findOne({$or: [{email: email}, {username: uname}]}, function(err, data){
+      if(err) throw err;
+      if(data){
+        res.render('signup',{title:'signup', err:'User already exist', csrfToken: req.csrfToken()});
+ 
+      } else{
+        // generate salt using bcryptjs
+        bcryptjs.genSalt(12, function(err,salt){
+          if(err) throw err;
+          if(salt){
+            bcryptjs.hash(psw, salt, function(err,hash){
+              if(err) throw err;
+              // else create a new instance of a user
+              const newUser = new User({
+                email: email,
+                username: uname,
+                password: hash,
+                googleId: null,
+                provider: 'email'
+              });
+              newUser.save((err, data)=>{
+                 if(err) throw err;
+                 res.redirect('/login');
+              })
+            })
+          }
+        })
+      }
+    })
+  }
+
+}
+
+const getLogin = async (req,res)=>{
+  try{
+    res.render('login',{title:'Login', csrfToken: req.csrfToken()})
+  }catch(err){
+    console.log(err)
+  }
+}
+
+
+
+const postLogin = async(req,res,next)=>{
+  passport.authenticate('local',{
+    failureRedirect: '/login',
+    successRedirect: '/',
+    failureFlash: true
+
+  })(req, res, next)
+}
+
+// logout
+const logout = (req,res,next)=>{
+  req.logout(function(err) {
+      if (err) { return next(err); }
+      req.session.destroy(function(err){
+          res.redirect('/');
+      })
+    });
+
+}
+
 
 module.exports = {
   homePage,
-  aboutPage,
+  privacyPage,
   categoriesContent,
   postDetails,
   searchPost,
@@ -241,5 +375,12 @@ module.exports = {
   deletePost,
   newCategory,
   editCategory_get,
-  editCategory_put
+  editCategory_put,
+  deleteCategory,
+  getSignup,
+  getLogin,
+  postLogin,
+  postSignup,
+  checkAuth,
+  logout
 };

@@ -1,13 +1,19 @@
 <h3 class="submit_new">ADD NEW CATEGORY</h3>
 <div class="form-container">
   <form action="/addNewCategory" enctype="multipart/form-data" method="POST">
+    
+         <!-- For csrf -->
+      <!-- name has to be _csrf(this lets the package do the validation for us) -->
+      <input type="hidden" name="_csrf" value="<%=csrfToken%>">
+      <!-- for csrf ends -->
     <!-- Name -->
     <div class="row">
       <div class="col-25">
         <label for="name">Add new category</label>
       </div>
       <div class="col-75">
-        <input type="text" id="name" name="name" placeholder="Add a title" />
+        <input type="text" id="name" name="name" placeholder="Add a title"/>
+        
       </div>
     </div>
 
@@ -40,4 +46,5 @@
       <input type="submit" value="Submit" />
     </div>
   </form>
+  <h1>Category title must be in capital letter e.g HTML</h1>
 </div>

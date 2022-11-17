@@ -1,5 +1,5 @@
 <main class="float">
-  <%if(typeof posts !== 'undefined' && posts.length > 0){%>
+  <%if(typeof posts !== 'undefined'){%>
   <!-- sidebar -->
   <div id="sidenav">
     <aside>
@@ -21,18 +21,33 @@
 
   <!-- for advert -->
   <div class="advert">
-    <h1>For advertisement</h1>
-    <img src="images/404.svg" alt="" />
+    <h1>Advert</h1>
+    <img src="/images/404.svg" alt="not found" width="150" height="250"/>
+
   </div>
 
   <!-- page_content -->
 
   <div class="page_content">
     <%categories.forEach((category)=>{%>
-      <a href="/editCategory/<%=category._id%>" class="edit"
-      ><i class="fa fa-pencil" aria-hidden="true" style="color: #063146"></i>
-      Edit</a>
+      <section class="category_Options_container">
+        <% if(loggedin){%>
+          <a href="/editCategory/<%=category._id%>" class="edit"
+           ><i class="fa fa-pencil" aria-hidden="true" style="color: #063146"></i>
+           Edit Category</a>
 
+           <form action="/deleteCategory/<%=category._id%>?_method=DELETE" method="POST">
+                <!-- For csrf -->
+      <!-- name has to be _csrf(this lets the package do the validation for us) -->
+      <input type="hidden" name="_csrf" value="<%=csrfToken%>">
+      <!-- for csrf ends -->
+             <i class="fa fa-trash" aria-hidden="true" style="color: #063146"></i>
+             <button type="submit">Delete Category</button>
+           </form>
+        <%}%>
+
+        
+    </section>
     <div class="aside_open" id="open">
       <div class="bars"></div>
       <div class="bars"></div>
@@ -73,20 +88,27 @@
   </div>
   <!-- for advert -->
   <div class="advert">
-    <h1>For advertisement</h1>
+    <h1>Advert</h1>
+    <img src="/images/404.svg" alt="not found" width="150" height="250"/>
   </div>
 
   <div class="page_content">
     <section class="option_content">
+    <% if(loggedin){%>
       <form action="/deletePost/<%=postDetails._id%>?_method=DELETE" method="POST">
+      <!-- For csrf -->
+      <!-- name has to be _csrf(this lets the package do the validation for us) -->
+      <input type="hidden" name="_csrf" value="<%=csrfToken%>">
+      <!-- for csrf ends -->
         <i class="fa fa-trash" aria-hidden="true" style="color: #063146"></i>
-        <button type="submit">Delete</button>
+        <button type="submit" class="delete_btn">Delete</button>
       </form>
 
       <a href="/editPost/<%=postDetails._id%>" class="edit"
         ><i class="fa fa-pencil" aria-hidden="true" style="color: #063146"></i>
         Edit</a
       >
+    <%}%>
     </section>
     <div class="aside_open" id="open" title="open sidebar">
       <div class="bars"></div>

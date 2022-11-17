@@ -1,21 +1,28 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const csrf = require('csurf');
+const expressSession = require('express-session');
 const methodOveride = require('method-override');
 const fileUpload = require('express-fileupload');
 const expresslayout = require('express-ejs-layouts');
+const cookieParser = require('cookie-parser')
+const MemoryStore = require('memorystore')(expressSession);
+const passport = require('passport');
+const flash = require('connect-flash');
 const app = express();
 
 
 const port = 3000;
 
 const routes = require('./routers/blog-routes');
-const { urlencoded } = require('express');
+// const { urlencoded } = require('express');
 // express layout
 app.use(expresslayout);
 app.set('layout', './layouts/main-layout');
 app.set('view engine','ejs');
 
-const dbURI = 'enter your connection string'
+const dbURI = ''
+
 mongoose.connect(dbURI, {useNewUrlParser: true, useUnifiedTopology: true})
 .then(()=>{
   app.listen(port, () => {
@@ -29,12 +36,38 @@ mongoose.connect(dbURI, {useNewUrlParser: true, useUnifiedTopology: true})
 })
 //use express.urlencoded to grab form values
 app.use(express.urlencoded({extended:true}));
+//use cookie parser
+app.use(cookieParser('dolomite'));
 
-//use method overide
-app.use(methodOveride('_method'));
+//use express-session
+app.use(expressSession({
+  secret: 'dolomite',
+  resave: false,
+  saveUninitialized: true,
+  maxAge: 86400000,
+  store: new MemoryStore({
+    checkPeriod: 86400000 // prune expired entries every 24h
+  })
+  // cookie: { secure: true }
+}));
 
 // use fileUpload
 app.use(fileUpload());
+//use csrf
+app.use(csrf());
+//use passport
+app.use(passport.initialize());
+app.use(passport.session());
+//use connect flash
+app.use(flash());
+
+app.use(function(req, res, next){
+  res.locals.error = req.flash('error');
+  next();
+})
+//use method overide
+app.use(methodOveride('_method'));
+
 
 //use public folder
 app.use(express.static('public'));

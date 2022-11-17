@@ -16,7 +16,7 @@ name:{
 
 category:{
     type:String,
-    enum: ['HTML5','CSS','JAVASCRIPT','HOWTO','BOOTSTRAP', 'NODEJS'],
+    enum: ['HTML5','CSS','JAVASCRIPT','HOWTO','BOOTSTRAP', 'NODEJS', 'JAVA', 'PYTHON'],
     required:true,
 },
 
