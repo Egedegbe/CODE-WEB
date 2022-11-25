@@ -3,7 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0" /> -->
+    <!-- <meta name="viewport" content="width=1000; user-scalable=0;" /> -->
+    <meta name="viewport" content="width=device-width">
     <title>CodeWeb | <%=title%></title>
     <!-- custom stylesheet -->
     <link rel="stylesheet" href="/css/style.css" />
@@ -40,6 +42,12 @@
             <a href="/category/JAVASCRIPT">Javascript</a>
           </li>
           <li class="nav_links"><a href="/category/HOWTO">How to</a></li>
+          <!-- <section class="more_text">
+            <p>More</p>
+          </section>
+          <section class="more_tutorials_container">
+           <p>kdidk</p>
+          </section> -->
         </ul>
         <div class="search_container">
           <form action="/search" method="POST">
@@ -50,21 +58,26 @@
             <%}%>
            <!-- for csrf ends -->
             <i class="fa fa-search"></i>
-            <input type="search" name="searchPost" placeholder="search..." style="color:#063146;"/>
+            <input type="search" name="searchPost" placeholder="search..." style="color:white;"/>
           </form>
         </div>
 
         <div class="links_side_con" id="links_side">
           <ul class="links_side">
-            <li class="linked"><a href="#">Home</a></li>
+            <li class="linked"><a href="/">Home</a></li>
             <li class="linked"><a href="/category/HTML5">Hmtl</a></li>
             <li class="linked"><a href="/category/CSS">Css</a></li>
             <li class="linked"><a href="/category/JAVASCRIPT">Javascript</a></li>
             <li class="linked"><a href="/category/HOWTO">Howto</a></li>
             <li class="linked">
               <form action="/search" method="post">
+                 <!-- name has to be _csrf(this lets the package do the validation for us) -->
+            <%if(typeof csrfToken !== 'undefined'){%>
+              <input type="hidden" name="_csrf" value="<%=csrfToken%>">
+            <%}%>
+           <!-- for csrf ends -->
                 <i class="fa fa-search"></i>
-                <input type="search" name="searchPost" placeholder="search..." style="color:#063146;"/>
+                <input type="search" name="searchPost" placeholder="search..." style="color:white;"/>
               </form>
             </li>
           </ul>
@@ -74,7 +87,9 @@
 
     <!-- <a class="nav-link active" aria-current="page" href="/">Home</a> -->
 
-    <%-body%>
+      <div class="main_container">
+        <%-body%>
+      </div>
 
     <footer>copyright &copy; codeWeb | <a href="/privacy-policy">Privacy policy</a></footer>
     <!-- Custom js -->

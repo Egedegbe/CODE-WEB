@@ -22,7 +22,6 @@ app.set('layout', './layouts/main-layout');
 app.set('view engine','ejs');
 
 const dbURI = ''
-
 mongoose.connect(dbURI, {useNewUrlParser: true, useUnifiedTopology: true})
 .then(()=>{
   app.listen(port, () => {

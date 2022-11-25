@@ -84,7 +84,7 @@ const postDetails = async(req,res)=>{
        $diacriticSensitive:true
       }});
       // res.json(searchResults);
-      res.render('search',{title:'Search-results',searchResults});
+      res.render('search',{title:'Search-results',searchResults, csrfToken: req.csrfToken()});
     }
     catch(err){
       console.log(err)
@@ -206,7 +206,7 @@ console.log(err)
   }
 
 const privacyPage = (req, res) => {
-  res.render("privacy", { title: "About us-page" });
+  res.render("privacy", { title: "privacy-policy",csrfToken: req.csrfToken()});
 };
 
 
