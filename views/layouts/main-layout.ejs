@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <meta name="description" content="Free Web Tutorials">
+    <meta name="keywords" content="HTML,CSS,Python,JavaScript,Nodejs,C++,Java,PHP">
+    <meta name="author" content="Micah Atoma, Oghenero Okerri and Runo Egedegbe">
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0" /> -->
-    <!-- <meta name="viewport" content="width=1000; user-scalable=0;" /> -->
     <meta name="viewport" content="width=device-width">
-    <title>CodeWeb | <%=title%></title>
+    <title>Jumbocoders | <%=title%></title>
     <!-- custom stylesheet -->
     <link rel="stylesheet" href="/css/style.css" />
     <!-- prism css  -->
@@ -16,15 +17,13 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
     />
-
-    
   </head>
   <body onresize="trans()">
     <nav>
       <div class="nav_container">
         <div class="logo">
           <span class="me_logo">
-            <a href="/">CODEWEB</a>
+            <a href="/">JcoderS</a>
           </span>
         </div>
         <div class="icon_con" id="iconbar">
@@ -42,12 +41,6 @@
             <a href="/category/JAVASCRIPT">Javascript</a>
           </li>
           <li class="nav_links"><a href="/category/HOWTO">How to</a></li>
-          <!-- <section class="more_text">
-            <p>More</p>
-          </section>
-          <section class="more_tutorials_container">
-           <p>kdidk</p>
-          </section> -->
         </ul>
         <div class="search_container">
           <form action="/search" method="POST">
@@ -71,11 +64,11 @@
             <li class="linked"><a href="/category/HOWTO">Howto</a></li>
             <li class="linked">
               <form action="/search" method="post">
-                 <!-- name has to be _csrf(this lets the package do the validation for us) -->
+                 <!-- name has to be _csrf(this lets the package do the validation for us) -- -->
             <%if(typeof csrfToken !== 'undefined'){%>
               <input type="hidden" name="_csrf" value="<%=csrfToken%>">
             <%}%>
-           <!-- for csrf ends -->
+        <!-- for csrf ends -- -->
                 <i class="fa fa-search"></i>
                 <input type="search" name="searchPost" placeholder="search..." style="color:white;"/>
               </form>
@@ -91,7 +84,8 @@
         <%-body%>
       </div>
 
-    <footer>copyright &copy; codeWeb | <a href="/privacy-policy">Privacy policy</a></footer>
+    <footer>copyright &copy; Jumbocoders | <a href="/privacy-policy">Privacy policy</a></footer>
+
     <!-- Custom js -->
     <script src="/js/script.js"></script>
     <!-- prism js -->

@@ -12,7 +12,7 @@ const flash = require('connect-flash');
 const app = express();
 
 
-const port = 3000;
+const port = process.env.PORT||3000;
 
 const routes = require('./routers/blog-routes');
 // const { urlencoded } = require('express');
@@ -76,5 +76,5 @@ app.use(routes);
 
 //render 404 page
 app.use((req,res)=>{
-    res.status(404).render('404', {title: 'error-page'})
+    res.status(404).render('404', {title: 'error-page', csrfToken: req.csrfToken()})
 })
