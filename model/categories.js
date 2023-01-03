@@ -11,6 +11,7 @@ const categorieSchema = new Schema ({
 name:{
     type:String,
     required:true,
+    uppercase: true
 },
 
 image:{
